@@ -5,16 +5,26 @@
 //  Created by Chanelle Mosquera on 8/28/24.
 //
 
+#include "InputArguments.hpp"
+
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <cctype>
 
 int main(int argc, const char * argv[]) {
     
     while (true) {
         // get input
         std::cout << "> ";
-        std::string cmd;
-        std::getline(std::cin, cmd);
+        std::string line;
+        std::getline(std::cin, line);
+        
+        InputArguments inArgs(line);
+        std::string cmd = inArgs[0];
+        auto args = inArgs.Subset(1);
+        
+        std::transform(cmd.begin(), cmd.end(), cmd.begin(), [](char c) {return std::tolower(c);});
 
         // handle command
         if (cmd == "add") {

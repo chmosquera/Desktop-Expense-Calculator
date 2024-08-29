@@ -10,12 +10,23 @@
 
 #include <iostream>
 #include <ostream>
+#include <fstream>
 #include <string>
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
 
 int main(int argc, const char * argv[]) {
+    ExpenseSheet::Entry e, ex;
+    e.label = "Test Test Test";
+    e.value = 99.23123;
+    std::ofstream fileOut("./entry.dat", std::ios::out | std::ios::binary);
+    e.Serialize(fileOut);
+    fileOut.close();
+    
+    std::ifstream fileIn("./entry.dat", std::ios::in | std::ios::binary);
+    ex.Deserialize(fileIn);
+    fileIn.close();
     
     ExpenseSheet expenseSheet;
     

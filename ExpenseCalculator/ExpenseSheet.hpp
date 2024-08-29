@@ -13,6 +13,8 @@
 #include <string_view>
 #include <iostream>
 #include <ostream>
+#include <istream>
+#include <sstream>
 #include <iomanip>
 #include <vector>
 #include <algorithm>
@@ -27,6 +29,9 @@ class ExpenseSheet {
             inline bool operator==(const Entry& rhs) const {
                 return label == rhs.label;
             }
+            
+            void Serialize(std::ostream& out);
+            void Deserialize(std::istream& in);
         };
         
         ExpenseSheet() = default;

@@ -6,13 +6,18 @@
 //
 
 #include "InputArguments.hpp"
+#include "ExpenseSheet.hpp"
 
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
 
 int main(int argc, const char * argv[]) {
+    
+    ExpenseSheet expenseSheet;
     
     while (true) {
         // get input
@@ -26,15 +31,42 @@ int main(int argc, const char * argv[]) {
         
         std::transform(cmd.begin(), cmd.end(), cmd.begin(), [](char c) {return std::tolower(c);});
 
-        // handle command
+        // Handle commands
         if (cmd == "add") {
-            std::cout << "Command " << cmd << '\n';
+            if (args.Count() == 2 || args.Count() == 3) {
+                const auto& label = args[0];
+                double value;
+                
+                if (args.Count() == 2) {
+                    value = atof(args[1].c_str()) * -1.0;
+                } else {
+                    value = atof(args[2].c_str());
+                    if (args[1] != "+") {
+                        value *= -1.;
+                    }
+                }
+                
+                if (expenseSheet.Add(label, value) == false) {
+                    std::cout << "Could not add '" << label << "'. Make sure that you enter the right values and try again." << '\n';
+                    std::cout << "Usage: add <label> <optional: +/-> <value>" << '\n';
+                }
+            } else {
+                std::cout << "Usage: add <label> <optional: +/-> <value>" << '\n';
+            }
         } else if (cmd == "del") {
-            std::cout << "Command " << cmd << '\n';
+            if (args.Count() == 1) {
+                if (expenseSheet.Del(args[0]) == false) {
+                    std::cout << "Could not find '" << args[0] << "'. Make sure that you enter the right label and try again. Use command 'list' to see all entries." << '\n';
+                    std::cout << "Usage: del <label>" << '\n';
+                }
+            } else {
+                std::cout << "Usage: del <label>" << '\n';
+            }
         } else if (cmd == "list") {
-            std::cout << "Command " << cmd << '\n';
+            expenseSheet.List(std::cout);
         } else if (cmd == "eval") {
-            std::cout << "Command " << cmd << '\n';
+            double total = expenseSheet.Eval();
+            std::cout << "Total: " << std::setprecision(3) << total << '\n';
         } else if (cmd == "exit") {
             return 0;
         } else {

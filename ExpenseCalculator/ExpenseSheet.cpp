@@ -50,7 +50,7 @@ bool ExpenseSheet::Open(const std::filesystem::path& datafile) {
     
     std::ifstream fileIn(datafile, std::ios::in | std::ios::binary);
     if (fileIn.is_open()) {
-        
+        m_path = datafile;
         size_t elementCount = 0;
         fileIn.read((char*)&elementCount, sizeof(size_t));
         
@@ -66,17 +66,26 @@ bool ExpenseSheet::Open(const std::filesystem::path& datafile) {
 }
 
 bool ExpenseSheet::Save(const std::filesystem::path& datafile) const {
+    auto xpath = datafile;
+    
+    if (datafile.empty()) {
+        if (m_path.empty()) {
+            return false;
+        } else {
+            xpath = m_path;
+        }
+    }
     
     // Create the directories by passing in only directories, not filename
-    auto path = datafile;
+    auto path = xpath;
     path.remove_filename();
     
     if (path.empty() == false) {
-        std::filesystem::create_directories(path);        
+        std::filesystem::create_directories(path);
     }
     
     // Tip: trunc overwrites the file if one exists
-    std::ofstream fileOut(datafile, std::ios::out | std::ios::trunc | std::ios::binary);
+    std::ofstream fileOut(xpath, std::ios::out | std::ios::trunc | std::ios::binary);
     if (fileOut.is_open()) {
         // Write number of elements for easy processing when opening
         size_t elementCount = m_entries.size();

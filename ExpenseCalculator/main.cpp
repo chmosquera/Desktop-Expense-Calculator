@@ -18,18 +18,16 @@
 #include <filesystem>
 
 int main(int argc, const char * argv[]) {
-    ExpenseSheet::Entry e, ex;
-    e.label = "Test Test Test";
-    e.value = 99.23123;
-    std::ofstream fileOut("./entry.dat", std::ios::out | std::ios::binary);
-    e.Serialize(fileOut);
-    fileOut.close();
-    
-    std::ifstream fileIn("./entry.dat", std::ios::in | std::ios::binary);
-    ex.Deserialize(fileIn);
-    fileIn.close();
     
     ExpenseSheet expenseSheet;
+    
+    // If program initiates with a filepath arg, try to open expense sheet.
+    if (argc == 2) {
+        std::filesystem::path path = argv[1];
+        if (!expenseSheet.Open(path)) {
+            std::cout << "Could not open the file at path " << (char*)&path << '\n';
+        }
+    }
     
     while (true) {
         // get input
@@ -96,7 +94,13 @@ int main(int argc, const char * argv[]) {
                 std::filesystem::path p = args[0];
                 p.replace_extension(".dat");
                 if (!expenseSheet.Save(p)) {
-                    std::cout << "Could not save file" << '\n';
+                    std::cout << "Could not save file at path " << (char*)&p << '\n';
+                    std::cout << "Usage: save <path>" << '\n';
+                }
+            } else if (args.Count() == 0) {
+                if (!expenseSheet.Save()) {
+                    std::cout << "Could not save file." << '\n';
+                    std::cout << "Usage: save <path>" << '\n';
                 }
             } else {
                 std::cout << "Usage: save <path>" << '\n';

@@ -46,7 +46,7 @@ class ExpenseSheet {
         double Eval();
     
         bool Open(const std::filesystem::path& datafile);
-        bool Save(const std::filesystem::path& datafile) const;
+        bool Save(const std::filesystem::path& datafile = "") const;
 
         // store in a vector m_entries;
         // Default constructor, copy constructor, and copyable = operator
@@ -54,6 +54,7 @@ class ExpenseSheet {
         // Del function, given a label, return true for success
         // List writes to an outsstream
     private:
+        std::filesystem::path m_path;
         std::vector<Entry> m_entries;
 };
 

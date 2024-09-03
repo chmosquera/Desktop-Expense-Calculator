@@ -112,8 +112,10 @@ void ExpenseSheet::Entry::Deserialize(std::istream& in) {
     char c;
     do {
         in.read(&c, 1);
-        ss << c;
-    } while (c!= '\0');
+        if (c != '\0') {
+            ss << c;
+        }
+    } while (c != '\0');
     
     label = ss.str();
     in.read((char*)&value, sizeof(double));

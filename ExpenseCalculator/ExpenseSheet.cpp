@@ -136,7 +136,7 @@ bool ExpenseSheet::ExportHtml(const std::filesystem::path& file) const {
     if (fileOut.is_open()) {
         fileOut <<
             R"(<!doctype html>
-            <html lang="en">
+            <html lang="en" data-bs-theme="dark">
               <head>
                 <!-- Required meta tags -->
                 <meta charset="utf-8">
@@ -171,14 +171,14 @@ bool ExpenseSheet::ExportHtml(const std::filesystem::path& file) const {
                         <tr>
                           <th scope="row">)" << ++i << R"(</th>
                           <td>)" << e.label << R"(</td>
-                          <td>)" << e.value << R"(</td>
+                          <td class=" )" << TextHTMLClass(e.value) << R"(">)" << e.value << R"(</td>
                         </tr>)";
         }
     
         fileOut << R"(
                       </tbody>
                     </table>
-                    <p class=".fs-3">Total: )" << this->Eval() << R"(</p>
+                    <p class="fs-3 )" << TextHTMLClass(Eval()) << R"(">Total: )" << Eval() << R"(</p>
                   </div>
                 </div>
               </div>

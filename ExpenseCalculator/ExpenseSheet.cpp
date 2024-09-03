@@ -90,19 +90,19 @@ bool ExpenseSheet::Save(const std::filesystem::path& datafile) const {
 }
 
 
-    void ExpenseSheet::Entry::Serialize(std::ostream& out) const {
-        out.write(label.c_str(), label.length() + 1);
-        out.write((char*)&value, sizeof(double));
-    }
+void ExpenseSheet::Entry::Serialize(std::ostream& out) const {
+    out.write(label.c_str(), label.length() + 1);
+    out.write((char*)&value, sizeof(double));
+}
 
-    void ExpenseSheet::Entry::Deserialize(std::istream& in) {
-        std::stringstream ss;
-        char c;
-        do {
-            in.read(&c, 1);
-            ss << c;
-        } while (c!= '\0');
-        
-        label = ss.str();
-        in.read((char*)&value, sizeof(double));
-    }
+void ExpenseSheet::Entry::Deserialize(std::istream& in) {
+    std::stringstream ss;
+    char c;
+    do {
+        in.read(&c, 1);
+        ss << c;
+    } while (c!= '\0');
+    
+    label = ss.str();
+    in.read((char*)&value, sizeof(double));
+}

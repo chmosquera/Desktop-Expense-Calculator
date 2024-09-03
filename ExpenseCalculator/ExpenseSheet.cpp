@@ -70,7 +70,10 @@ bool ExpenseSheet::Save(const std::filesystem::path& datafile) const {
     // Create the directories by passing in only directories, not filename
     auto path = datafile;
     path.remove_filename();
-    std::filesystem::create_directories(path);
+    
+    if (path.empty() == false) {
+        std::filesystem::create_directories(path);        
+    }
     
     // Tip: trunc overwrites the file if one exists
     std::ofstream fileOut(datafile, std::ios::out | std::ios::trunc | std::ios::binary);

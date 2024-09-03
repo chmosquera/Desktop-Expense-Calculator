@@ -46,7 +46,51 @@ double ExpenseSheet::Eval() {
     return sum;
 }
 
-    void ExpenseSheet::Entry::Serialize(std::ostream& out) {
+bool ExpenseSheet::Open(const std::filesystem::path& datafile) {
+    
+    std::ifstream fileIn(datafile, std::ios::in | std::ios::binary);
+    if (fileIn.is_open()) {
+        
+        size_t elementCount = 0;
+        fileIn.read((char*)&elementCount, sizeof(size_t));
+        
+        for (size_t i = 0; i < elementCount; i++) {
+            ExpenseSheet::Entry e;
+            e.Deserialize(fileIn);
+            m_entries.push_back(std::move(e));
+        }
+        return true;
+    }
+    
+    return false;
+}
+
+bool ExpenseSheet::Save(const std::filesystem::path& datafile) const {
+    
+    // Create the directories by passing in only directories, not filename
+    auto path = datafile;
+    path.remove_filename();
+    std::filesystem::create_directories(path);
+    
+    // Tip: trunc overwrites the file if one exists
+    std::ofstream fileOut(datafile, std::ios::out | std::ios::trunc | std::ios::binary);
+    if (fileOut.is_open()) {
+        // Write number of elements for easy processing when opening
+        size_t elementCount = m_entries.size();
+        fileOut.write((char*)&elementCount, sizeof(size_t));
+                
+        for (const ExpenseSheet::Entry& e : m_entries) {
+            e.Serialize(fileOut);
+        }
+        
+        return true;
+    }
+    return false;
+    
+}
+
+
+    void ExpenseSheet::Entry::Serialize(std::ostream& out) const {
         out.write(label.c_str(), label.length() + 1);
         out.write((char*)&value, sizeof(double));
     }

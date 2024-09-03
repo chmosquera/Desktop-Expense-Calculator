@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cctype>
 #include <iomanip>
+#include <filesystem>
 
 int main(int argc, const char * argv[]) {
     ExpenseSheet::Entry e, ex;
@@ -80,7 +81,29 @@ int main(int argc, const char * argv[]) {
             std::cout << "Total: " << std::setprecision(3) << total << '\n';
         } else if (cmd == "exit") {
             return 0;
-        } else {
+        } else if (cmd == "open") {
+            if (args.Count() == 1) {
+                std::filesystem::path p = args[0];
+                p.replace_extension(".dat");
+                if (!expenseSheet.Open(p)) {
+                    std::cout << "Could not open the file." << '\n';
+                }
+            } else {
+                std::cout << "Usage: open <path>" << '\n';
+            }
+        } else if (cmd == "save") {
+            if (args.Count() == 1) {
+                std::filesystem::path p = args[0];
+                p.replace_extension(".dat");
+                if (!expenseSheet.Save(p)) {
+                    std::cout << "Could not save file" << '\n';
+                }
+            } else {
+                std::cout << "Usage: save <path>" << '\n';
+            }
+            
+        }
+        else {
             std::cout << "Command " << cmd << " does not exist" << '\n';
         }
     }

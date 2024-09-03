@@ -15,9 +15,11 @@
 #include <ostream>
 #include <istream>
 #include <sstream>
+#include <fstream>
 #include <iomanip>
 #include <vector>
 #include <algorithm>
+#include <filesystem>
 
 class ExpenseSheet {
     public:
@@ -30,7 +32,7 @@ class ExpenseSheet {
                 return label == rhs.label;
             }
             
-            void Serialize(std::ostream& out);
+            void Serialize(std::ostream& out) const;
             void Deserialize(std::istream& in);
         };
         
@@ -42,6 +44,9 @@ class ExpenseSheet {
         bool Del(std::string_view label);
         void List(std::ostream& os) const;
         double Eval();
+    
+        bool Open(const std::filesystem::path& datafile);
+        bool Save(const std::filesystem::path& datafile) const;
 
         // store in a vector m_entries;
         // Default constructor, copy constructor, and copyable = operator

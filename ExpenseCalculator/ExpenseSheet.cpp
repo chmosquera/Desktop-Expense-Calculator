@@ -101,6 +101,45 @@ bool ExpenseSheet::Save(const std::filesystem::path& datafile) const {
     
 }
 
+bool ExpenseSheet::ExportCsv(const std::filesystem::path& file) const {
+    auto xpath = file;
+    xpath.replace_extension(".csv");
+    
+    auto path = xpath;
+    if (path.remove_filename().empty() == false) {
+        std::filesystem::create_directories(path);
+    }
+    
+    std::ofstream fileOut(xpath, std::ios::out | std::ios::trunc);
+    if (fileOut.is_open()) {
+        fileOut << "Pos,Expense,Value" << '\n';
+        size_t i = 1;
+        for (const ExpenseSheet::Entry& e : m_entries) {
+            fileOut << i++ << "," << e.label << "," << e.value << '\n';
+        }
+        return true;
+    }
+    
+    return false;
+}
+
+bool ExpenseSheet::ExportHtml(const std::filesystem::path& file) const {
+    auto xpath = file;
+    xpath.replace_extension(".html");
+    
+    auto path = xpath;
+    if (path.remove_filename().empty() == false) {
+        std::filesystem::create_directories(path);
+    }
+    
+    std::ofstream fileOut(xpath, std::ios::out | std::ios::trunc);
+    if (fileOut.is_open()) {
+        
+        return true;
+    }
+    
+    return false;
+}
 
 void ExpenseSheet::Entry::Serialize(std::ostream& out) const {
     out.write(label.c_str(), label.length() + 1);

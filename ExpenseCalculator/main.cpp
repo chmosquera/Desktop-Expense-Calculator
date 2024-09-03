@@ -58,10 +58,10 @@ int main(int argc, const char * argv[]) {
                 
                 if (expenseSheet.Add(label, value) == false) {
                     std::cout << "Could not add '" << label << "'. Make sure that you enter the right values and try again." << '\n';
-                    std::cout << "Usage: add <label> <optional: +/-> <value>" << '\n';
+                    std::cout << "Usage: add <label> <optional: +|-> <value>" << '\n';
                 }
             } else {
-                std::cout << "Usage: add <label> <optional: +/-> <value>" << '\n';
+                std::cout << "Usage: add <label> <optional: +|-> <value>" << '\n';
             }
         } else if (cmd == "del") {
             if (args.Count() == 1) {
@@ -106,6 +106,21 @@ int main(int argc, const char * argv[]) {
                 std::cout << "Usage: save <path>" << '\n';
             }
             
+        } else if (cmd == "export") {
+            if (args.Count() == 2) {
+                if (args[0] == "csv") {
+                    std::filesystem::path p = args[1];
+                    expenseSheet.ExportCsv(p);
+                } else if (args[0] == "html") {
+                    std::filesystem::path p = args[1];
+                    expenseSheet.ExportHtml(p);
+                } else {
+                    std::cout << "Usage: export <csv|html>" << '\n';
+                }
+                
+            } else {
+                std::cout << "Usage: export <csv|html>" << '\n';
+            }
         }
         else {
             std::cout << "Command " << cmd << " does not exist" << '\n';
